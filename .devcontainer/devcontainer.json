@@ -1,0 +1,40 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.195.0/containers/java
+{
+	"name": "Java",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			// Update the VARIANT arg to pick a Java version: 8, 11, 14
+			// Append -bullseye or -buster to pin to an OS version.
+			// Use the -bullseye variants on local arm64/Apple Silicon.
+			"VARIANT": "11-bullseye",
+			// Options
+			"INSTALL_MAVEN": "true",
+			"MAVEN_VERSION": "3.6.3",
+			"INSTALL_GRADLE": "false",
+			"NODE_VERSION": "lts/*"
+		}
+	},
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"java.home": "/docker-java-home",
+		"maven.executable.path": "/usr/local/sdkman/candidates/maven/current/bin/mvn"
+	},
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"vscjava.vscode-java-pack",
+		"vscjava.vscode-java-debug"
+	],
+	"runArgs": [
+		"--network=host"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [
+	// ],
+	"postStartCommand": "sudo install cli/core/v0.8.0/tanzu-core-linux_amd64 /usr/local/bin/tanzu && tanzu plugin install --local cli all",
+	"postCreateCommand": "curl -LO https://dl.k8s.io/release/v1.21.5/bin/linux/amd64/kubectl && chmod +x kubectl && mkdir -p ~/.local/bin/ && mv ./kubectl ~/.local/bin/kubectl",
+	"postAttachCommand": "mkdir -p ~/.kube && cp ./kubeconfig ~/.kube/config",
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}
